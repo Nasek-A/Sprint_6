@@ -4,9 +4,10 @@ from selenium import webdriver
 
 @pytest.fixture
 def driver():
-    driver = webdriver.Firefox()
-    driver.maximize_window()
+    browser = webdriver.Firefox()
+    browser.maximize_window()
 
-    yield driver
-
-    driver.quit()
+    try:
+        yield browser
+    finally:
+        browser.quit()
