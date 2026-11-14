@@ -6,13 +6,14 @@ from pages.main_page import MainPage
 
 @allure.feature("Раздел FAQ")   
 class TestFaq:
+
     @allure.title("Проверка ответа на вопрос FAQ № {question_number}")
     @allure.story("Пользователь раскрывает вопрос и видит ответ")
     
     @pytest.mark.parametrize(
         "question_number, expected_answer",
         FAQ_DATA,
-        ids=[f"question_{i}" for i in range(8)]
+        ids=[f"question_{number}" for number, _ in FAQ_DATA]
     )
 
     def test_faq_questions(

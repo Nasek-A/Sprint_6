@@ -15,7 +15,7 @@ ORDER_DATA = [
             "name": "Иван",
             "surname": "Иванов",
             "address": "Москва, улица Ленина, 10",
-            "metro": "Пражская",
+            "metro": "Сокольники",
             "phone": "+79991234567",
             "date": tomorrow,
             "period": "трое суток",

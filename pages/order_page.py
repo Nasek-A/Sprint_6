@@ -1,6 +1,5 @@
 import allure
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 
 from pages.base_page import BasePage
@@ -59,6 +58,11 @@ class OrderPage(BasePage):
             By.ID,
             "grey"
     )
+
+    COLOR_CHECKBOXES = {
+        "black": BLACK_COLOR_CHECKBOX,
+        "grey": GREY_COLOR_CHECKBOX,
+    }
     
     COMMENT_INPUT = (
             By.XPATH,
@@ -83,104 +87,60 @@ class OrderPage(BasePage):
 
     @allure.step("Ввести имя: {name}")
     def enter_name(self, name):
-        self.wait.until(
-            EC.visibility_of_element_located(
-                self.NAME_INPUT
-            )
-        ).send_keys(name)
+        self.type_text(self.NAME_INPUT, name)
 
     @allure.step("Ввести фамилию: {surname}")
     def enter_surname(self, surname):
-        self.wait.until(
-            EC.visibility_of_element_located(
-                self.SURNAME_INPUT
-            )
-        ).send_keys(surname)
+        self.type_text(self.SURNAME_INPUT, surname)
 
     @allure.step("Ввести адрес доставки: {address}")
     def enter_address(self, address):
-        self.wait.until(
-            EC.visibility_of_element_located(
-                self.ADDRESS_INPUT
-            )
-        ).send_keys(address)
+        self.type_text(self.ADDRESS_INPUT, address)
         
     @allure.step("Выбрать станцию метро: {metro}")
     def enter_metro(self, metro):
-        metro_input = self.wait.until(
-            EC.element_to_be_clickable(self.METRO_INPUT)
-        )
-
-        metro_input.click()
-        metro_input.send_keys(metro)
+        self.click_element(self.METRO_INPUT)
+        self.type_text(self.METRO_INPUT, metro)
 
         metro_option = (
             By.XPATH,
-            f"//div[normalize-space()='{metro}']/parent::button",
+            f"//div[normalize-space()='{metro}']/parent::button"
         )
-        self.wait.until(EC.element_to_be_clickable(metro_option)).click()
+        self.click_element(metro_option)
 
     @allure.step("Ввести номер телефона: {phone}")
     def enter_phone(self, phone):
-        self.wait.until(
-            EC.visibility_of_element_located(
-                self.PHONE_INPUT
-            )
-        ).send_keys(phone)
+        self.type_text(self.PHONE_INPUT, phone)
     
     @allure.step("Перейти ко второй части формы заказа")
     def click_next_button(self):
-        self.wait.until(
-            EC.element_to_be_clickable(
-                self.NEXT_BUTTON
-            )
-        ).click()
+        self.click_element(self.NEXT_BUTTON)
 
     @allure.step("Указать дату доставки: {date}")
     def enter_date(self, date):
-        date_input = self.wait.until(
-            EC.element_to_be_clickable(self.DATE_INPUT)
-        )
-        date_input.send_keys(date)
-        date_input.send_keys(Keys.ESCAPE)
+        self.type_text(self.DATE_INPUT, date)
+        self.press_key(self.DATE_INPUT, Keys.ESCAPE)
 
     @allure.step("Выбрать срок аренды: {period}")
     def select_rent_period(self, period):
-        self.wait.until(
-            EC.element_to_be_clickable(
-                self.RENT_PERIOD_DROPDOWN
-            )
-        ).click()
+        self.click_element(self.RENT_PERIOD_DROPDOWN)
 
         option = (
             By.XPATH,
-            f"//div[contains(@class, 'Dropdown-option') and normalize-space()='{period}']"
+            "//div[contains(@class, 'Dropdown-option') "
+            f"and normalize-space()='{period}']"
         )
-
-        self.wait.until(
-            EC.element_to_be_clickable(option)
-        ).click()
+        self.click_element(option)
 
     @allure.step("Выбрать цвет самоката: {color}")    
     def select_color(self, color):
-        if color == "black":
-            locator = self.BLACK_COLOR_CHECKBOX
-        elif color == "grey":
-            locator = self.GREY_COLOR_CHECKBOX
-        else:
-            raise ValueError(f"Unknown color: {color}")
-
-        self.wait.until(
-            EC.element_to_be_clickable(locator)
-        ).click()
+        if color not in self.COLOR_CHECKBOXES:
+            raise ValueError(f"Неизвестный цвет самоката: {color}")
+        self.click_element(self.COLOR_CHECKBOXES[color])
 
     @allure.step("Добавить комментарий курьеру")
     def enter_comment(self, comment):
-        self.wait.until(
-            EC.visibility_of_element_located(
-        self.COMMENT_INPUT
-                    )
-        ).send_keys(comment)
+        self.type_text(self.COMMENT_INPUT, comment)
 
     @allure.step("Заполнить данные клиента и адрес доставки")
     def fill_customer_details(self, data):
@@ -205,25 +165,12 @@ class OrderPage(BasePage):
 
     @allure.step("Нажать кнопку «Заказать» в форме")
     def click_order_button(self):
-        self.wait.until(
-            EC.element_to_be_clickable(
-                self.ORDER_BUTTON
-            )
-        ).click()
+        self.click_element(self.ORDER_BUTTON)
 
     @allure.step("Подтвердить оформление заказа")
     def confirm_order(self):
-        self.wait.until(
-            EC.element_to_be_clickable(
-                self.CONFIRM_BUTTON
-            )
-        ).click()
+        self.click_element(self.CONFIRM_BUTTON)
 
     @allure.step("Получить сообщение об успешном оформлении заказа")
     def get_success_message(self):
-        message = self.wait.until(
-            EC.visibility_of_element_located(
-                self.SUCCESS_MESSAGE
-            )
-        )
-        return message.text         
+        return self.get_text(self.SUCCESS_MESSAGE)      

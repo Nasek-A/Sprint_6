@@ -1,8 +1,6 @@
 import allure
 import pytest
 
-from selenium.webdriver.support import expected_conditions as EC
-
 from data import ORDER_DATA
 from pages.main_page import MainPage
 from pages.order_page import OrderPage
@@ -10,6 +8,7 @@ from pages.order_page import OrderPage
 
 @allure.feature("Оформление заказа")
 class TestOrder:
+
     @allure.title("Оформление заказа через кнопку {button_position}")
     @allure.story("Пользователь заполняет форму и подтверждает заказ")
     @pytest.mark.parametrize(
@@ -25,10 +24,7 @@ class TestOrder:
         # Открываем главную страницу и форму заказа
         main_page.open()
         main_page.click_order_button(button_position)
-        order_page.wait.until(
-            EC.visibility_of_element_located(order_page.NAME_INPUT)
-        )
-
+        
         # Заполняем обе части формы
         order_page.fill_order_form(order_data)
 
